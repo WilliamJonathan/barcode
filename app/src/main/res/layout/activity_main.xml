@@ -11,4 +11,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/image"
+            android:background="@drawable/bkg_imagem"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
 </FrameLayout>

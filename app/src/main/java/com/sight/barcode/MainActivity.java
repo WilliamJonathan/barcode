@@ -23,6 +23,7 @@ import android.graphics.Rect;
 import android.media.Image;
 import android.os.Bundle;
 import android.util.Size;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         /**validar permissões*/
         Permissoes.validarPermissoes(permissoes, this, 1);
         previewView = findViewById(R.id.previewView);
+        this.getWindow().setFlags(1024, 1024);
         setCameraProviderListener();
 
         analyzer = new MyImageAnalyzer(getSupportFragmentManager());
@@ -159,14 +161,16 @@ public class MainActivity extends AppCompatActivity {
                 String rawValue = barcode.getRawValue();
 
                 int valueType = barcode.getValueType();
+                Toast.makeText(MainActivity.this, valueType, Toast.LENGTH_LONG).show();
                 // See API reference for complete list of supported types
-                switch (valueType) {
+                /*switch (valueType) {
                     case Barcode.TYPE_WIFI:
                         String ssid = barcode.getWifi().getSsid();
                         String password = barcode.getWifi().getPassword();
                         int type = barcode.getWifi().getEncryptionType();
                         break;
                     case Barcode.TYPE_URL:
+                    case Barcode.FORMAT_QR_CODE:
                         if (bd.isAdded()){
                             bd.show(fragmentManager, "");
                         }
@@ -175,7 +179,8 @@ public class MainActivity extends AppCompatActivity {
                         String title = barcode.getUrl().getTitle();
                         String url = barcode.getUrl().getUrl();
                         break;
-                }
+
+                }*/
             }
         }
 
