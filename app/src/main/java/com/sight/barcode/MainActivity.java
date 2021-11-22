@@ -22,6 +22,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Size;
 import android.widget.Toast;
 
@@ -113,49 +114,65 @@ public class MainActivity extends AppCompatActivity {
             bd = new bottom_dialog();
         }
 
-        @Override
+        /*@Override
         public void analyze(@NonNull ImageProxy image) {
             scanbarcode(image);
+        }*/
+
+        @Override
+        public void analyze(ImageProxy imageProxy) {
+            // Pass image to an ML Kit Vision API
+            //Log.d("Sandbox", "### Would analyze the image here ...");
+            scanbarcode(imageProxy);
+            imageProxy.close();
+            //scanbarcode(imageProxy);
         }
 
 
         private void scanbarcode(ImageProxy imageProxy) {
 
             @SuppressLint("UnsafeOptInUsageError") Image image = imageProxy.getImage();
-            assert image != null;
-            InputImage inputImage = InputImage.fromMediaImage(image, imageProxy.getImageInfo().getRotationDegrees());
-            BarcodeScannerOptions options =
-                    new BarcodeScannerOptions.Builder()
-                            .setBarcodeFormats(
-                                    Barcode.FORMAT_QR_CODE,
-                                    Barcode.FORMAT_EAN_13)
-                            .build();
+            //@SuppressLint("UnsafeOptInUsageError") Image mediaImage = imageProxy.getImage();
+            if (image != null) {
+                //assert image != null;
+                InputImage inputImage = InputImage.fromMediaImage(image, imageProxy.getImageInfo().getRotationDegrees());
+                /*BarcodeScannerOptions options =
+                        new BarcodeScannerOptions.Builder()
+                                .setBarcodeFormats(
+                                        Barcode.FORMAT_QR_CODE,
+                                        Barcode.FORMAT_EAN_13)
+                                .build();*/
 
-            BarcodeScanner scanner = BarcodeScanning.getClient(options);
-            Task<List<Barcode>> result = scanner.process(inputImage)
-                    .addOnSuccessListener(new OnSuccessListener<List<Barcode>>() {
-                        @Override
-                        public void onSuccess(@NonNull List<Barcode> barcodes) {
-                            readerBarcodeData(barcodes);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
+                //BarcodeScanner scanner = BarcodeScanning.getClient(options);
+                BarcodeScanner scanner = BarcodeScanning.getClient();
+                //Task<List<Barcode>> result =
+                /*scanner.process(inputImage)
+                        .addOnSuccessListener(this::readerBarcodeData)
+                        .addOnFailureListener(e -> {
 
-                        }
-                    })
-                    .addOnCompleteListener(new OnCompleteListener<List<Barcode>>() {
-                        @Override
-                        public void onComplete(@NonNull Task<List<Barcode>> task) {
-                            image.close();
-                        }
-                    });
+                        })
+                        .addOnCompleteListener(task -> image.close());*/
+                Task<List<Barcode>> result = scanner.process(inputImage)
+                        .addOnSuccessListener(new OnSuccessListener<List<Barcode>>() {
+                            @Override
+                            public void onSuccess(List<Barcode> barcodes) {
+                                // Task completed successfully
+                                readerBarcodeData(barcodes);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Task failed with an exception
+                                // ...
+                            }
+                        });
+            }
 
         }
 
         private void readerBarcodeData(List<Barcode> barcodes) {
-            for (Barcode barcode : barcodes) {
+            /*for (Barcode barcode : barcodes) {
                 Rect bounds = barcode.getBoundingBox();
                 Point[] corners = barcode.getCornerPoints();
 
@@ -181,7 +198,14 @@ public class MainActivity extends AppCompatActivity {
                         String url = barcode.getUrl().getUrl();
                         break;
 
-                }*/
+                }
+            }*/
+            for (Barcode barcode: barcodes) {
+                Rect bounds = barcode.getBoundingBox();
+                Point[] corners = barcode.getCornerPoints();
+
+                String rawValue = barcode.getRawValue();
+                Toast.makeText(MainActivity.this, rawValue, Toast.LENGTH_LONG).show();
             }
         }
 
