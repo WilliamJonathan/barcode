@@ -61,9 +61,10 @@ public class MainActivity extends AppCompatActivity {
         /**validar permissões*/
         Permissoes.validarPermissoes(permissoes, this, 1);
         previewView = findViewById(R.id.previewView);
-        this.getWindow().setFlags(1024, 1024);
+        //this.getWindow().setFlags(1024, 1024);
         setCameraProviderListener();
         analyzer = new MyImageAnalyzer(getSupportFragmentManager());
+        //analyzer = new MyImageAnalyzer();
     }
 
     private void setCameraProviderListener() {
@@ -114,10 +115,8 @@ public class MainActivity extends AppCompatActivity {
             bd = new bottom_dialog();
         }
 
-        /*@Override
-        public void analyze(@NonNull ImageProxy image) {
-            scanbarcode(image);
-        }*/
+        public MyImageAnalyzer() {;
+        }
 
         @Override
         public void analyze(ImageProxy imageProxy) {
@@ -136,77 +135,48 @@ public class MainActivity extends AppCompatActivity {
             if (image != null) {
                 //assert image != null;
                 InputImage inputImage = InputImage.fromMediaImage(image, imageProxy.getImageInfo().getRotationDegrees());
-                /*BarcodeScannerOptions options =
+                BarcodeScannerOptions options =
                         new BarcodeScannerOptions.Builder()
                                 .setBarcodeFormats(
                                         Barcode.FORMAT_QR_CODE,
                                         Barcode.FORMAT_EAN_13)
-                                .build();*/
+                                .build();
 
                 //BarcodeScanner scanner = BarcodeScanning.getClient(options);
                 BarcodeScanner scanner = BarcodeScanning.getClient();
-                //Task<List<Barcode>> result =
-                /*scanner.process(inputImage)
-                        .addOnSuccessListener(this::readerBarcodeData)
-                        .addOnFailureListener(e -> {
-
-                        })
-                        .addOnCompleteListener(task -> image.close());*/
                 Task<List<Barcode>> result = scanner.process(inputImage)
-                        .addOnSuccessListener(new OnSuccessListener<List<Barcode>>() {
-                            @Override
-                            public void onSuccess(List<Barcode> barcodes) {
-                                // Task completed successfully
-                                readerBarcodeData(barcodes);
-                            }
+                        .addOnSuccessListener(barcodes -> {
+                            // Task completed successfully
+                            readerBarcodeData(barcodes);
+                            image.close();
                         })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                // Task failed with an exception
-                                // ...
-                            }
-                        });
+                        .addOnFailureListener(Throwable::printStackTrace)
+                        .addOnCompleteListener(task -> image.close());
             }
 
         }
 
         private void readerBarcodeData(List<Barcode> barcodes) {
-            /*for (Barcode barcode : barcodes) {
-                Rect bounds = barcode.getBoundingBox();
-                Point[] corners = barcode.getCornerPoints();
-
+            for (Barcode barcode : barcodes) {
                 String rawValue = barcode.getRawValue();
-
                 int valueType = barcode.getValueType();
-                Toast.makeText(MainActivity.this, valueType, Toast.LENGTH_LONG).show();
                 // See API reference for complete list of supported types
-                /*switch (valueType) {
-                    case Barcode.TYPE_WIFI:
-                        String ssid = barcode.getWifi().getSsid();
-                        String password = barcode.getWifi().getPassword();
-                        int type = barcode.getWifi().getEncryptionType();
-                        break;
-                    case Barcode.TYPE_URL:
-                    case Barcode.FORMAT_QR_CODE:
-                        if (bd.isAdded()){
-                            bd.show(fragmentManager, "");
-                        }
-                        bd.fetchurl(barcode.getUrl().getUrl());
-
-                        String title = barcode.getUrl().getTitle();
-                        String url = barcode.getUrl().getUrl();
-                        break;
-
+                //Toast.makeText(MainActivity.this, String.valueOf(valueType), Toast.LENGTH_LONG).show();
+                if (valueType == Barcode.TYPE_URL) {
+                    if (!bd.isAdded()) {
+                        bd.show(fragmentManager, "");
+                    }
+                    bd.fetchurl(barcode.getUrl().getUrl());
+                    //Toast.makeText(MainActivity.this, rawValue, Toast.LENGTH_LONG).show();
                 }
-            }*/
-            for (Barcode barcode: barcodes) {
+            }
+            /*for (Barcode barcode: barcodes) {
                 Rect bounds = barcode.getBoundingBox();
                 Point[] corners = barcode.getCornerPoints();
 
                 String rawValue = barcode.getRawValue();
                 Toast.makeText(MainActivity.this, rawValue, Toast.LENGTH_LONG).show();
-            }
+            }*/
         }
 
     }
