@@ -156,6 +156,55 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+        private String nomeFormatoCodigo(int tipo){
+            String formato = "";
+            switch (tipo){
+                case Barcode.FORMAT_ALL_FORMATS:
+                    formato = "FORMAT_ALL_FORMATS";
+                    break;
+                case Barcode.FORMAT_EAN_13:
+                    formato = "FORMAT_EAN_13";
+                    break;
+                case Barcode.FORMAT_QR_CODE:
+                    formato = "FORMAT_QR_CODE";
+                    break;
+                case Barcode.FORMAT_AZTEC:
+                    formato = "FORMAT_AZTEC";
+                    break;
+                case Barcode.FORMAT_CODE_39:
+                    formato = "FORMAT_CODE_39";
+                    break;
+                case Barcode.FORMAT_CODE_93:
+                    formato = "FORMAT_CODE_93";
+                    break;
+                case Barcode.FORMAT_CODE_128:
+                    formato = "FORMAT_CODE_128";
+                    break;
+                case Barcode.FORMAT_DATA_MATRIX:
+                    formato = "FORMAT_DATA_MATRIX";
+                    break;
+                case Barcode.FORMAT_EAN_8:
+                    formato = "FORMAT_EAN_8";
+                    break;
+                case Barcode.FORMAT_PDF417:
+                    formato = "FORMAT_PDF417";
+                    break;
+                case Barcode.FORMAT_UPC_A:
+                    formato = "FORMAT_UPC_A";
+                    break;
+                case Barcode.FORMAT_UPC_E:
+                    formato = "FORMAT_UPC_E";
+                    break;
+                case Barcode.FORMAT_ITF:
+                    formato = "FORMAT_ITF";
+                    break;
+                default:
+                    formato = "FORMAT_UNKNOWN";
+            }
+
+            return formato;
+        }
+
         private void readerBarcodeData(List<Barcode> barcodes) {
             for (Barcode barcode : barcodes) {
                 String rawValue = barcode.getRawValue();
@@ -168,6 +217,13 @@ public class MainActivity extends AppCompatActivity {
                     }
                     bd.fetchurl(barcode.getUrl().getUrl());
                     //Toast.makeText(MainActivity.this, rawValue, Toast.LENGTH_LONG).show();
+                }else{
+                    String nome = nomeFormatoCodigo(barcode.getFormat());
+                    Toast.makeText(
+                            MainActivity.this,
+                            "Formato: " + nome + "\n" +
+                                    "Valor: " + barcode.getRawValue(),
+                            Toast.LENGTH_LONG).show();
                 }
             }
             /*for (Barcode barcode: barcodes) {
