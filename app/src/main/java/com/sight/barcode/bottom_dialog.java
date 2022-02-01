@@ -31,8 +31,8 @@ public class bottom_dialog extends BottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_dialog, container, false);
 
-        title = view.findViewById(R.id.txt_tituo);
-        link = view.findViewById(R.id.txt_link);
+        title = view.findViewById(R.id.txt_titulo);
+        //link = view.findViewById(R.id.txt_link);
         btn_visit = view.findViewById(R.id.visit);
         close = view.findViewById(R.id.close);
 
